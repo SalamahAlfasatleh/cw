@@ -26,10 +26,15 @@
         <main>
             <section>
                 <form id="searchForm">
-                    <p>Search for people in our database by entering a name below.</p>
-                    <label for="searchName">Name:</label>
-                    <input type="text" id="searchName" name="searchName">
-                    <button type="submit">Search</button>
+                    <div class="form-group">
+                        <label for="searchName">Search by driver name</label>
+                        <input type="text" id="searchName" name="searchName">
+                    </div>
+                    <div class="form-group">
+                        <label for="searchLicense">Search by driving license number</label>
+                        <input type="text" id="searchLicense" name="searchLicense">
+                    </div>
+                    <button type="submit">Submit</button>
                 </form>
                 <div id="searchResults">
                 </div>
