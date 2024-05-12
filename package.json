@@ -1,0 +1,16 @@
+{
+  "name": "cw2",
+  "version": "1.0.0",
+  "main": "coursework-sample.spec.js",
+  "scripts": {},
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "@types/node": "^20.12.11"
+  }
+}
