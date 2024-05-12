@@ -17,10 +17,13 @@ header, footer, main, aside {
 }
 
 .navigation {
+  position: absolute;
+  top: 20px; /* Adjust according to your design */
+  right: 20px; /* Adjust according to your design */
   list-style-type: none;
   display: flex;
   justify-content: space-around;
-  padding: 10px 0;
+  padding: 0;
 }
 
 .navigation li {
@@ -34,7 +37,6 @@ header, footer, main, aside {
   text-align: center;
 }
 
-/* CSS Grid Layout for the container */
 #container {
   display: grid;
   grid-template-columns: 1fr 4fr;
@@ -54,6 +56,12 @@ footer {
   background-color: #f3f3f3;
 }
 
-h1 {
-  text-align: center;
+header {
+  display: flex;
+  justify-content: center; /* Horizontally centers the content */
+  align-items: center; /* Vertically centers the content */
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid black;
+  height: 100px; /* You can adjust this based on your design needs */
 }
