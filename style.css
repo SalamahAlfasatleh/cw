@@ -1,43 +1,56 @@
-body {
-  display: grid;
-  grid-template-rows: auto 1fr auto; /* Header, Main, Footer */
-  min-height: 100vh;
+/* General reset */
+
+* {
+  box-sizing: border-box;
   margin: 0;
-}
-
-header {
-  border: 1px solid black;
-  padding: 10px;
-  text-align: center;
-}
-
-.box {
-  border: 1px solid black;
-  padding: 10px;
-  display: inline-block; /* Ensure the box only occupies its content width */
-}
-
-nav {
-  text-align: center;
-}
-
-.nav-links {
-  display: flex;
-  justify-content: space-between;
-  list-style: none;
   padding: 0;
 }
 
-.nav-links li {
-  display: inline;
+body {
+  font-family: Arial, sans-serif;
+}
+
+header, footer, main, aside {
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid black;
+}
+
+/* Navigation styling */
+.navigation {
+  list-style-type: none;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+}
+
+.navigation li {
+  flex: 1;
+}
+
+.navigation a {
+  text-decoration: none;
+  color: black;
+  display: block;
+  text-align: center;
+}
+
+/* CSS Grid Layout for the container */
+#container {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  gap: 10px;
+}
+
+aside {
+  grid-column: 1;
 }
 
 main {
-  padding: 20px;
+  grid-column: 2;
 }
 
 footer {
-  border-top: 1px solid black;
   text-align: center;
-  padding: 10px;
+  background-color: #f3f3f3;
 }
