@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Database Interface - Home</title>
+    <title>People Search</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,20 +11,27 @@
         <h1>People Search</h1>
         <nav>
             <ul class="navigation">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="vehicle-search.html">Vehicle search</a></li>
-                <li><a href="add-vehicle.html">Add a vehicle</a></li>
+                <li><a href="index.html">People Search</a></li>
+                <li><a href="vehicle-search.html">Vehicle Search</a></li>
+                <li><a href="add-vehicle.html">Add a Vehicle</a></li>
             </ul>
         </nav>
     </header>
     <div id="container">
         <aside>
             <img src="sidebar-image.jpg" alt="Sidebar Image">
+            <p>Search for people in our database by entering a name below.</p>
         </aside>
         <main>
             <section>
-                <h2>Welcome to the Database Interface</h2>
-                <p>Use the navigation above to access different database functionalities.</p>
+                <form id="searchForm">
+                    <label for="searchName">Name:</label>
+                    <input type="text" id="searchName" name="searchName">
+                    <button type="submit">Search</button>
+                </form>
+                <div id="searchResults">
+                    <!-- Search results will be displayed here -->
+                </div>
             </section>
         </main>
     </div>
