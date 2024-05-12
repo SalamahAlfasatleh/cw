@@ -4,6 +4,7 @@
   "main": "coursework-sample.spec.js",
   "scripts": {},
   "author": "",
+  "type": "module",
   "license": "ISC",
   "description": "",
   "dependencies": {

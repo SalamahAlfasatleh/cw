@@ -11,20 +11,17 @@ body {
   font-family: Arial, sans-serif;
 }
 
-header, footer, main, aside {
+.headerr, footer, main, aside {
   padding: 10px;
   margin: 10px;
   border: 1px solid black;
 }
 
 .navigation {
-  position: fixed; 
-  top: 20px;
-  right: 20px;
   list-style-type: none;
   display: flex;
   justify-content: space-around;
-  padding: 0;
+  padding: 10px 0;
 }
 
 .navigation li {
@@ -58,11 +55,7 @@ footer {
 }
 
 header {
-  display: flex;
-  justify-content: center; 
-  align-items: center; 
-  padding: 10px;
-  margin: 10px;
-  border: 1px solid black;
-  height: 100px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
