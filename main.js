@@ -123,6 +123,11 @@ async function searchVehicle() {
 }
 
 async function addVehicle() {
+    const vehicleIDElement = document.getElementById('vehicleID');
+    if (!vehicleIDElement) {
+        console.error('Vehicle ID input not found!');
+        return;
+    }
     const vehicleID = document.getElementById('vehicleID').value.trim();
     const make = document.getElementById('make').value.trim();
     const model = document.getElementById('model').value.trim();
