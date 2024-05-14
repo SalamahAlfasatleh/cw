@@ -1,49 +1,137 @@
-/* Apply universal styles */
+/* Basic Reset */
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* Styling for header, main (inside container), aside, and footer */
-header, #container > main, aside, footer {
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+  line-height: 1.6;
+  margin: 10px; /* added margin for the body to give space around the entire content */
+}
+
+header, main, aside, footer {
   border: 1px solid black;
   margin: 10px;
   padding: 10px;
 }
 
-/* CSS Grid setup for the container */
-#container {
-  display: grid;
-  grid-template-columns: 1fr 3fr;  /* Adjust the grid template as needed */
+header {
+  background: #333;
+  color: #fff;
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid black;
+  text-align: center;
 }
 
-/* Additional styles as needed */
-body {
-  font-family: Arial, sans-serif;
-}
-
-nav ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-nav li {
-  display: inline;
-  margin-right: 10px;
-}
-
-nav a {
-  text-decoration: none;
-  color: black;
-}
-
-/* Ensure full width and centering of content */
-body, html {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
+header nav {
+  /* Making the nav a flex container */
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center; /* Centering the navigation items horizontally */
+  align-items: center; /* Aligning the navigation items vertically */
+}
+
+header nav ul {
+  display: flex; 
+  padding: 0;
+  list-style: none; /* Removes default list styling */
+  align-items: center; /* Aligns the navigation links vertically */
+}
+
+header nav ul li {
+  margin: 0 10px; /* Spacing between the navigation links */
+  flex: 0 1 auto; /* Ensures that each li has the flex property correctly set */
+}
+
+header nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  padding: 5px 10px; /* Padding around the links for better clickability */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+header nav ul li a:hover {
+  background-color: #575757; /* Hover effect for links */
+  border-radius: 5px; /* Optional: adds rounded corners to the link backgrounds on hover */
+}
+
+#container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+aside {
+  flex: 1 1 300px;
+  margin-right: 20px; /* Adjusted margin for layout consistency */
+}
+
+aside img {
+  max-width: 100%;
+  height: auto;
+}
+
+main {
+  flex: 3 1 600px;
+}
+
+form {
+  background: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+form input[type="text"],
+form button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+form button {
+  background-color: #5C67F2;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+form button:hover {
+  background-color: #4a54e1;
+}
+
+#results div {
+  background: white;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+footer {
+  text-align: center;
+  background: #333;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  #container {
+      flex-direction: column;
+  }
+
+  aside {
+      margin-right: 0;
+      margin-bottom: 20px;
+  }
+
+  main {
+      flex: 1 1 100%;
+  }
 }
