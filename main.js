@@ -8,17 +8,17 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    const peopleForm = document.getElementById('searchForm');
+    const peopleForm = document.getElementById('peopleSearchForm');
     const vehicleForm = document.getElementById('vehicleSearchForm');
-    const messageDiv = document.getElementById('message');
     const resultsDiv = document.getElementById('results');
+    const messageDiv = document.getElementById('message');
 
-    peopleForm.addEventListener('submit', async event => {
+    peopleForm.addEventListener('submit', function(event) {
         event.preventDefault();
         const name = document.getElementById('name').value.trim();
         const license = document.getElementById('license').value.trim();
 
-        // Validation for people search
+        // Validate input
         if (!name && !license) {
             messageDiv.textContent = 'Error: Both fields are empty';
             resultsDiv.innerHTML = '';
@@ -30,58 +30,48 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const query = name || license;
-        await searchPeople(query);
+        // Perform search (assuming searchPeople is an async function)
+        searchPeople(name || license);
     });
 
-    vehicleForm.addEventListener('submit', async event => {
+    vehicleForm.addEventListener('submit', function(event) {
         event.preventDefault();
         const rego = document.getElementById('rego').value.trim();
 
-        // Validation for vehicle search
         if (!rego) {
             messageDiv.textContent = 'Error: Registration number field is empty';
             resultsDiv.innerHTML = '';
             return;
         }
 
-        await searchVehicle(rego);
+        // Perform search (assuming searchVehicle is an async function)
+        searchVehicle(rego);
     });
 });
 
 async function searchPeople(query) {
-    const { data, error } = await supabase
-        .from('people')
-        .select('PersonID, Name, Address, DOB, LicenseNumber, ExpiryDate')
-        .or(`Name.ilike.%${query}%, LicenseNumber.ilike.%${query}%`);
-
-    handleResponse(data, error);
+    // Simulated API call
+    const results = await fakeApiCall(query);
+    displayResults(results);
 }
 
 async function searchVehicle(rego) {
-    const { data, error } = await supabase
-        .from('vehicles')
-        .select('VehicleID, Make, Model, Colour, people (Name, LicenseNumber)')
-        .eq('VehicleID', rego)
-        .single();
-
-    handleResponse([data], error); // Wrap data in array for consistency
+    // Simulated API call
+    const results = await fakeApiCall(rego);
+    displayResults(results);
 }
 
-function handleResponse(data, error) {
-    if (error) {
-        console.error('Error:', error);
-        messageDiv.textContent = `Error: ${error.message}`;
-        resultsDiv.innerHTML = '';
-        return;
-    }
-
-    if (!data || data.length === 0) {
+function displayResults(results) {
+    if (results.length === 0) {
         messageDiv.textContent = 'No result found';
         resultsDiv.innerHTML = '';
     } else {
-        const resultsHTML = data.map(person => `<div>${person.Name} - License: ${person.LicenseNumber}, Address: ${person.Address}, DOB: ${person.DOB}, Expiry: ${person.ExpiryDate}</div>`).join('');
-        resultsDiv.innerHTML = resultsHTML;
+        resultsDiv.innerHTML = results.map(result => `<div>${result}</div>`).join('');
         messageDiv.textContent = 'Search successful';
     }
+}
+
+async function fakeApiCall(query) {
+    // Simulate fetching data
+    return new Promise(resolve => setTimeout(() => resolve([query]), 1000));
 }
