@@ -7,42 +7,36 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 
-async function searchPeople(query) {
-  query = query.trim();  // Trim whitespace
-
-  if (!query) {
-      alert('Please enter a search term.');
-      return;
-  }
-
-  // Using ilike for case-insensitive partial matching
-  const { data, error } = await supabase
-      .from('people')
-      .select('PersonID, Name, Address, DOB, LicenseNumber, ExpiryDate')
-      .or(`Name.ilike.%${query}%,LicenseNumber.ilike.%${query}%`);
-
-  if (error) {
-      console.error('Error searching for people:', error);
-      alert('Error searching for people: ' + error.message);
-      return;
-  }
-
-  // Handle the display of search results
-  const resultsContainer = document.getElementById('searchResults');
-  resultsContainer.innerHTML = ''; // Clear previous results
-
-  if (data.length === 0) {
-      resultsContainer.innerHTML = '<p>No matching records found.</p>';
-  } else {
-      const resultList = data.map(person =>
-          `<li>${person.Name} - License: ${person.LicenseNumber}, Address: ${person.Address}, DOB: ${person.DOB}, Expiry: ${person.ExpiryDate}</li>`
-      ).join('');
-      resultsContainer.innerHTML = `<ul>${resultList}</ul>`;
-  }
-}
-
-document.getElementById('searchForm').addEventListener('submit', function(event) {
-  event.preventDefault();
-  const searchQuery = document.getElementById('searchName').value || document.getElementById('searchLicense').value;
-  searchPeople(searchQuery);
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('searchForm');
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const query = document.getElementById('searchQuery').value;
+        await searchPeople(query);
+    });
 });
+
+async function searchPeople(query) {
+    const { data, error } = await supabase
+        .from('people')
+        .select('PersonID, Name, Address, DOB, LicenseNumber, ExpiryDate')
+        .or(`Name.ilike.%${query}%,LicenseNumber.ilike.%${query}%`);
+
+    const resultsContainer = document.getElementById('results');
+    resultsContainer.innerHTML = ''; // Clear previous results
+
+    if (error) {
+        console.error('Error searching for people:', error);
+        resultsContainer.innerHTML = `<p>Error: ${error.message}</p>`;
+        return;
+    }
+
+    if (data.length === 0) {
+        resultsContainer.innerHTML = '<p>No matching records found.</p>';
+    } else {
+        const resultList = data.map(person => 
+            `<li>${person.Name} - License: ${person.LicenseNumber}, Address: ${person.Address}, DOB: ${person.DOB}, Expiry: ${person.ExpiryDate}</li>`
+        ).join('');
+        resultsContainer.innerHTML = `<ul>${resultList}</ul>`;
+    }
+}
