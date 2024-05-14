@@ -97,7 +97,7 @@ async function searchVehicle() {
             Colour,
             OwnerID,
             people:OwnerID (Name, LicenseNumber)
-        `) // This join operation fetches the owner's name and license number using the foreign key relationship.
+        `) 
         .eq('VehicleID', rego)
         .single();
 
