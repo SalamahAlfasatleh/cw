@@ -64,8 +64,8 @@ async function searchVehicle(rego) {
             Make,
             Model,
             Colour,
-            owners (Name, LicenseNumber)
-        `)
+            people (Name, LicenseNumber)
+        `) // Adjusted from 'owners' to 'people'
         .eq('VehicleID', rego)
         .single();
 
@@ -86,8 +86,8 @@ async function searchVehicle(rego) {
                 <p>Make: ${data.Make}</p>
                 <p>Model: ${data.Model}</p>
                 <p>Colour: ${data.Colour}</p>
-                <p>Owner: ${data.owners ? data.owners.Name : 'Unknown'}</p>
-                <p>License Number: ${data.owners ? data.owners.LicenseNumber : 'Unknown'}</p>
+                <p>Owner: ${data.people ? data.people.Name : 'Unknown'}</p>
+                <p>License Number: ${data.people ? data.people.LicenseNumber : 'Unknown'}</p>
             </div>
         `;
         resultsContainer.innerHTML = vehicleDetails;
