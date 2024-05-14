@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('searchForm');
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
-        const query = document.getElementById('searchQuery').value;
+        const query = document.getElementById('name').value;  // Updated to 'name'
         await searchPeople(query);
     });
 });
@@ -38,6 +38,6 @@ async function searchPeople(query) {
             `<div>${person["Name"]} - License: ${person["LicenseNumber"]}, Address: ${person["Address"]}, DOB: ${person["DOB"]}, Expiry: ${person["ExpiryDate"]}</div>`
         ).join('');
         resultsContainer.innerHTML = resultList;
-        document.getElementById('message').textContent = 'Search successful'; // Set success message
+        document.getElementById('message').textContent = 'Search successful';
     }
 }
