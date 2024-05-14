@@ -78,8 +78,9 @@ async function searchVehicle() {
             Make,
             Model,
             Colour,
+            OwnerID,
             people:OwnerID (Name, LicenseNumber)
-        `)
+        `) // This join operation fetches the owner's name and license number using the foreign key relationship.
         .eq('VehicleID', rego)
         .single();
 
@@ -94,13 +95,14 @@ async function searchVehicle() {
         resultsContainer.innerHTML = '';
     } else {
         messageDiv.textContent = 'Search successful';
+        const ownerInfo = data.people || { Name: 'Unknown', LicenseNumber: 'Unknown' };
         resultsContainer.innerHTML = `
             <div>
                 <p>Make: ${data.Make}</p>
                 <p>Model: ${data.Model}</p>
                 <p>Colour: ${data.Colour}</p>
-                <p>Owner: ${data.people ? data.people.Name : 'Unknown'}</p>
-                <p>License Number: ${data.people ? data.people.LicenseNumber : 'Unknown'}</p>
+                <p>Owner: ${ownerInfo.Name}</p>
+                <p>License Number: ${ownerInfo.LicenseNumber}</p>
             </div>
         `;
     }
