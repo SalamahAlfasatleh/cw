@@ -96,7 +96,7 @@ form button {
 }
 
 form button {
-  background-color: #5C67F2;
+  background-color: #3944F7;
   color: white;
   border: none;
   cursor: pointer;
@@ -104,7 +104,7 @@ form button {
 }
 
 form button:hover {
-  background-color: #4a54e1;
+  background-color: #2C34C7; 
 }
 
 #results div {
