@@ -164,6 +164,8 @@ async function addVehicle(rego, make, model, colour, ownerID, messageDiv) {
         .insert([{ VehicleID: rego, Make: make, Model: model, Colour: colour, OwnerID: ownerID }]);
     if (error) {
         messageDiv.textContent = `Error adding vehicle: ${error.message}`;
+    } else {
+        messageDiv.textContent = 'Vehicle added successfully';
     }
 }
 
@@ -185,12 +187,10 @@ window.addOwner = async () => {
         return;
     }
 
-    if (response.ok) {
-        document.getElementById('addVehicleForm').submit();
+    if (data && data.length > 0) {
+        document.getElementById('addVehicleForm').submit(); // This assumes the vehicle form is ready to be submitted
+        messageDiv.textContent = 'Owner added successfully. Submitting vehicle information...';
     } else {
-        console.error('Failed to add owner');
-        alert("Failed to add owner.");
+        messageDiv.textContent = 'Failed to add owner. No data returned.';
     }
-
-    messageDiv.textContent = 'Vehicle added successfully';
 };
