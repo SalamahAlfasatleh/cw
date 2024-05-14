@@ -27,11 +27,21 @@
                 <input type="text" id="make" placeholder="Enter make" required>
                 <input type="text" id="model" placeholder="Enter model" required>
                 <input type="text" id="colour" placeholder="Enter colour" required>
-                <input type="text" id="ownerId" placeholder="Enter owner ID" required>
-                <button type="submit">Add Vehicle</button>
+                <input type="text" id="owner" placeholder="Enter owner ID" required>
+                <button type="submit">Add</button>
             </form>
-            
-            <div id="results"></div>
+
+            <div id="newOwnerForm" style="display:none;">
+                <h2>Add New Owner</h2>
+                <input type="text" id="personid" placeholder="Enter person ID" required>
+                <input type="text" id="name" placeholder="Enter owner's name" required>
+                <input type="text" id="address" placeholder="Enter owner's address" required>
+                <input type="date" id="dob" placeholder="Enter owner's date of birth" required>
+                <input type="text" id="license" placeholder="Enter owner's license number" required>
+                <input type="date" id="expire" placeholder="Enter license expiring date" required>
+                <button type="button" onclick="addOwner()">Add owner</button>
+            </div>
+
             <p id="message"></p>
         </main>
     </div>

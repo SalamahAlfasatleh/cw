@@ -123,48 +123,75 @@ async function searchVehicle() {
 }
 
 async function addVehicle() {
-    const vehicleIDElement = document.getElementById('vehicleID');
-    if (!vehicleIDElement) {
-        console.error('Vehicle ID input not found!');
-        return;
-    }
-    const vehicleID = document.getElementById('vehicleID').value.trim();
+    const rego = document.getElementById('rego').value.trim();
     const make = document.getElementById('make').value.trim();
     const model = document.getElementById('model').value.trim();
     const colour = document.getElementById('colour').value.trim();
-    const ownerID = document.getElementById('ownerID').value.trim();
-    const resultsContainer = document.getElementById('results');
+    const ownerId = document.getElementById('owner').value.trim();
     const messageDiv = document.getElementById('message');
+    const resultsContainer = document.getElementById('results');
 
-    if (!vehicleID || !make || !model || !colour) {
-        messageDiv.textContent = 'Error: All fields must be filled out.';
-        resultsContainer.innerHTML = '';
-        return;
-    }
+    // First, check if the owner ID provided exists in the 'people' database
+    const { data: ownerData, error: ownerError } = await supabase
+        .from('people')
+        .select('PersonID')
+        .eq('PersonID', ownerId)
+        .single();
 
+        if (ownerError || !ownerData) {
+            messageDiv.textContent = 'No existing owner found with ID: ' + ownerId + '. Please add the owner.';
+            document.getElementById('newOwnerForm').style.display = 'block'; // Show the form to add a new owner
+            return;
+        }
+
+    // If owner exists, proceed to add the vehicle
     const { data, error } = await supabase
         .from('vehicles')
-        .insert([{
-            VehicleID: vehicleID,
-            Make: make,
-            Model: model,
-            Colour: colour,
-            OwnerID: ownerID || null // Allows null if no ownerID is provided
-        }]);
+        .insert([
+            { VehicleID: rego, Make: make, Model: model, Colour: colour, OwnerID: ownerId }
+        ]);
 
     if (error) {
         messageDiv.textContent = 'Error adding vehicle: ' + error.message;
         resultsContainer.innerHTML = '';
-    } else {
-        messageDiv.textContent = 'Vehicle added successfully.';
-        resultsContainer.innerHTML = `
-            <div>
-                <p>Vehicle ID: ${data[0].VehicleID}</p>
-                <p>Make: ${data[0].Make}</p>
-                <p>Model: ${data[0].Model}</p>
-                <p>Colour: ${data[0].Colour}</p>
-                <p>Owner ID: ${data[0].OwnerID || "No owner assigned"}</p>
-            </div>
-        `;
+        return;
     }
+
+    messageDiv.textContent = 'Vehicle added successfully!';
+    resultsContainer.innerHTML = `
+        <div>
+            <p>Registration: ${rego}</p>
+            <p>Make: ${make}</p>
+            <p>Model: ${model}</p>
+            <p>Colour: ${colour}</p>
+            <p>Owner ID: ${ownerId}</p>
+        </div>
+    `;
+}
+
+async function addOwner() {
+    const personId = document.getElementById('personid').value.trim();
+    const name = document.getElementById('name').value.trim();
+    const address = document.getElementById('address').value.trim();
+    const dob = document.getElementById('dob').value;
+    const license = document.getElementById('license').value.trim();
+    const expire = document.getElementById('expire').value;
+    const messageDiv = document.getElementById('message');
+
+    const { data, error } = await supabase
+        .from('people')
+        .insert([
+            { PersonID: personId, Name: name, Address: address, DOB: dob, LicenseNumber: license, ExpiryDate: expire }
+        ]);
+
+    if (error) {
+        messageDiv.textContent = 'Error adding owner: ' + error.message;
+        return;
+    }
+
+    messageDiv.textContent = 'Owner added successfully!';
+    document.getElementById('newOwnerForm').style.display = 'none';
+
+    // Optionally, proceed to add the vehicle after adding the owner
+    await addVehicle();
 }

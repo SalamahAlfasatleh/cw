@@ -57,13 +57,18 @@ header nav ul li a:hover {
 
 #container {
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: minmax(auto, 300px) 1fr;
   grid-gap: 20px;
   padding: 10px;
 }
 
 aside {
   grid-column: 1;
+}
+
+aside img {
+  max-width: 100%;  
+  height: auto;    
 }
 
 main {
