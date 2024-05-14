@@ -127,28 +127,28 @@ async function addVehicle() {
     const make = document.getElementById('make').value.trim();
     const model = document.getElementById('model').value.trim();
     const colour = document.getElementById('colour').value.trim();
-    const ownerId = document.getElementById('owner').value.trim();
+    const ownerName = document.getElementById('ownerName').value.trim(); // Updated to use ownerName
     const messageDiv = document.getElementById('message');
     const resultsContainer = document.getElementById('results');
 
-    // First, check if the owner ID provided exists in the 'people' database
+    // Query for the owner's ID using the owner name
     const { data: ownerData, error: ownerError } = await supabase
         .from('people')
         .select('PersonID')
-        .eq('PersonID', ownerId)
+        .ilike('Name', `%${ownerName}%`)
         .single();
 
-        if (ownerError || !ownerData) {
-            messageDiv.textContent = 'No existing owner found with ID: ' + ownerId + '. Please add the owner.';
-            document.getElementById('newOwnerForm').style.display = 'block'; // Show the form to add a new owner
-            return;
-        }
+    if (ownerError || !ownerData) {
+        messageDiv.textContent = 'No existing owner found with name: ' + ownerName + '. Please add the owner.';
+        document.getElementById('newOwnerForm').style.display = 'block';
+        return;
+    }
 
     // If owner exists, proceed to add the vehicle
     const { data, error } = await supabase
         .from('vehicles')
         .insert([
-            { VehicleID: rego, Make: make, Model: model, Colour: colour, OwnerID: ownerId }
+            { VehicleID: rego, Make: make, Model: model, Colour: colour, OwnerID: ownerData.PersonID }
         ]);
 
     if (error) {
@@ -164,7 +164,7 @@ async function addVehicle() {
             <p>Make: ${make}</p>
             <p>Model: ${model}</p>
             <p>Colour: ${colour}</p>
-            <p>Owner ID: ${ownerId}</p>
+            <p>Owner: ${ownerName}</p>
         </div>
     `;
 }
