@@ -188,7 +188,7 @@ window.addOwner = async () => {
     }
 
     if (data && data.length > 0) {
-        document.getElementById('addVehicleForm').submit(); // This assumes the vehicle form is ready to be submitted
+        document.getElementById('addVehicle').submit(); // This assumes the vehicle form is ready to be submitted
         messageDiv.textContent = 'Owner added successfully. Submitting vehicle information...';
     } else {
         messageDiv.textContent = 'Failed to add owner. No data returned.';
