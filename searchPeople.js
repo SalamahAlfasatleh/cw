@@ -20,7 +20,7 @@ async function searchPeople(query) {
     const { data, error } = await supabase
         .from('people')
         .select('PersonID, "Name", "Address", "DOB", "LicenseNumber", "ExpiryDate"')
-        .ilike("Name", `%${query}%`);
+        .or(`"Name".ilike.%${query}%, "LicenseNumber".ilike.%${query}%`);
 
     const resultsContainer = document.getElementById('searchResults');
     resultsContainer.innerHTML = '';
