@@ -10,7 +10,8 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 document.addEventListener('DOMContentLoaded', () => {
     const peopleForm = document.getElementById('peopleSearchForm');
     const vehicleForm = document.getElementById('vehicleSearchForm');
-    const addVehicleForm = document.getElementById('addVehicleForm'); // Ensure this ID matches your form
+    const addVehicleForm = document.getElementById('addVehicleForm');
+
 
 
     if (peopleForm){
@@ -33,6 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
             await checkAndAddVehicle();
         });
     }
+
+    
 
 });
 
@@ -145,7 +148,7 @@ async function checkAndAddVehicle() {
         await addVehicle(rego, make, model, colour, owner.PersonID, messageDiv);
     } else {
         document.getElementById('newOwnerForm').style.display = 'block';
-        messageDiv.textContent = 'Owner not found. Please add new owner.';
+        messageDiv.textContent = 'Owner not found. Please add new owner using the form below.';
     }
 }
 
@@ -153,7 +156,6 @@ async function addVehicle(rego, make, model, colour, ownerID, messageDiv) {
     const { error } = await supabase
         .from('vehicles')
         .insert([{ VehicleID: rego, Make: make, Model: model, Colour: colour, OwnerID: ownerID }]);
-
     if (error) {
         messageDiv.textContent = `Error adding vehicle: ${error.message}`;
     } else {
@@ -161,18 +163,13 @@ async function addVehicle(rego, make, model, colour, ownerID, messageDiv) {
     }
 }
 
-async function addOwnerAndVehicle() {
+window.addOwner = async () => {
     const name = document.getElementById('name').value.trim();
     const address = document.getElementById('address').value.trim();
     const dob = document.getElementById('dob').value;
     const license = document.getElementById('license').value.trim();
     const expire = document.getElementById('expire').value;
     const messageDiv = document.getElementById('message');
-    
-    const rego = document.getElementById('rego').value.trim();
-    const make = document.getElementById('make').value.trim();
-    const model = document.getElementById('model').value.trim();
-    const colour = document.getElementById('colour').value.trim();
 
     const { data, error } = await supabase
         .from('people')
@@ -184,10 +181,11 @@ async function addOwnerAndVehicle() {
     }
 
     const ownerID = data[0].PersonID;
-    await addVehicle(rego, make, model, colour, ownerID, messageDiv);
-}
+    const rego = document.getElementById('rego').value.trim();
+    const make = document.getElementById('make').value.trim();
+    const model = document.getElementById('model').value.trim();
+    const colour = document.getElementById('colour').value.trim();
 
-document.getElementById('addOwnerButton').addEventListener('click', async (event) => {
-    event.preventDefault();
-    await addOwnerAndVehicle();
-});
+    await addVehicle(rego, make, model, colour, ownerID, messageDiv);
+    document.getElementById('newOwnerForm').style.display = 'none';
+};
