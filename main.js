@@ -170,7 +170,7 @@ async function addVehicle(rego, make, model, colour, ownerID, messageDiv) {
 }
 
 window.addOwner = async () => {
-    const personId = document.getElementById('personId').value.trim(); // Get the PersonID from the form
+    const personId = document.getElementById('personid').value.trim(); // Get the PersonID from the form
     const name = document.getElementById('name').value.trim();
     const address = document.getElementById('address').value.trim();
     const dob = document.getElementById('dob').value;
