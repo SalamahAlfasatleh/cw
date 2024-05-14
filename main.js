@@ -10,6 +10,8 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 document.addEventListener('DOMContentLoaded', () => {
     const peopleForm = document.getElementById('peopleSearchForm');
     const vehicleForm = document.getElementById('vehicleSearchForm');
+    const addVehicleForm = document.getElementById('addVehicleForm'); // Ensure this ID matches your form
+
 
     if (peopleForm){
         peopleForm.addEventListener('submit', async (event) => {
@@ -23,6 +25,13 @@ document.addEventListener('DOMContentLoaded', () => {
             event.preventDefault();
             await searchVehicle();
          });
+    }
+
+    if(addVehicleForm){
+        addVehicleForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            await addVehicle();
+        });
     }
 
 });
@@ -108,6 +117,48 @@ async function searchVehicle() {
                 <p>Colour: ${data.Colour}</p>
                 <p>Owner: ${ownerInfo.Name}</p>
                 <p>License Number: ${ownerInfo.LicenseNumber}</p>
+            </div>
+        `;
+    }
+}
+
+async function addVehicle() {
+    const vehicleID = document.getElementById('vehicleID').value.trim();
+    const make = document.getElementById('make').value.trim();
+    const model = document.getElementById('model').value.trim();
+    const colour = document.getElementById('colour').value.trim();
+    const ownerID = document.getElementById('ownerID').value.trim();
+    const resultsContainer = document.getElementById('results');
+    const messageDiv = document.getElementById('message');
+
+    if (!vehicleID || !make || !model || !colour) {
+        messageDiv.textContent = 'Error: All fields must be filled out.';
+        resultsContainer.innerHTML = '';
+        return;
+    }
+
+    const { data, error } = await supabase
+        .from('vehicles')
+        .insert([{
+            VehicleID: vehicleID,
+            Make: make,
+            Model: model,
+            Colour: colour,
+            OwnerID: ownerID || null // Allows null if no ownerID is provided
+        }]);
+
+    if (error) {
+        messageDiv.textContent = 'Error adding vehicle: ' + error.message;
+        resultsContainer.innerHTML = '';
+    } else {
+        messageDiv.textContent = 'Vehicle added successfully.';
+        resultsContainer.innerHTML = `
+            <div>
+                <p>Vehicle ID: ${data[0].VehicleID}</p>
+                <p>Make: ${data[0].Make}</p>
+                <p>Model: ${data[0].Model}</p>
+                <p>Colour: ${data[0].Colour}</p>
+                <p>Owner ID: ${data[0].OwnerID || "No owner assigned"}</p>
             </div>
         `;
     }

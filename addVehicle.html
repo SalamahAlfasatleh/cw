@@ -22,9 +22,13 @@
             <img src="carr.avif" alt="Sidebar Image">
         </aside>
         <main>
-            <form id="vehicleSearchForm">
-                <input type="text" id="rego" placeholder="Enter registration number">
-                <button type="submit">Submit</button>
+            <form id="addVehicleForm">
+                <input type="text" id="rego" placeholder="Enter registration number" required>
+                <input type="text" id="make" placeholder="Enter make" required>
+                <input type="text" id="model" placeholder="Enter model" required>
+                <input type="text" id="colour" placeholder="Enter colour" required>
+                <input type="text" id="ownerId" placeholder="Enter owner ID" required>
+                <button type="submit">Add Vehicle</button>
             </form>
             
             <div id="results"></div>
