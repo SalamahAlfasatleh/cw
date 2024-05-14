@@ -123,37 +123,29 @@ async function searchVehicle() {
 }
 
 async function addVehicle() {
+    const messageDiv = document.getElementById('message');
+    const resultsContainer = document.getElementById('results');
     const rego = document.getElementById('rego').value.trim();
     const make = document.getElementById('make').value.trim();
     const model = document.getElementById('model').value.trim();
     const colour = document.getElementById('colour').value.trim();
-    const ownerName = document.getElementById('ownerName').value.trim(); // Updated to use ownerName
-    const messageDiv = document.getElementById('message');
-    const resultsContainer = document.getElementById('results');
+    const ownerName = document.getElementById('ownerName').value.trim();
 
-    // Query for the owner's ID using the owner name
-    const { data: ownerData, error: ownerError } = await supabase
-        .from('people')
-        .select('PersonID')
-        .ilike('Name', `%${ownerName}%`)
-        .single();
+    messageDiv.textContent = '';
+    resultsContainer.innerHTML = '';
 
-    if (ownerError || !ownerData) {
+    // Simulating a database call for owner ID using the owner's name
+    const ownerData = await simulateOwnerLookup(ownerName);
+    if (!ownerData) {
         messageDiv.textContent = 'No existing owner found with name: ' + ownerName + '. Please add the owner.';
         document.getElementById('newOwnerForm').style.display = 'block';
         return;
     }
 
-    // If owner exists, proceed to add the vehicle
-    const { data, error } = await supabase
-        .from('vehicles')
-        .insert([
-            { VehicleID: rego, Make: make, Model: model, Colour: colour, OwnerID: ownerData.PersonID }
-        ]);
-
-    if (error) {
-        messageDiv.textContent = 'Error adding vehicle: ' + error.message;
-        resultsContainer.innerHTML = '';
+    // Simulating adding a vehicle
+    const success = await simulateAddVehicle({ rego, make, model, colour, ownerID: ownerData.ownerID });
+    if (!success) {
+        messageDiv.textContent = 'Error adding vehicle.';
         return;
     }
 
@@ -178,20 +170,14 @@ async function addOwner() {
     const expire = document.getElementById('expire').value;
     const messageDiv = document.getElementById('message');
 
-    const { data, error } = await supabase
-        .from('people')
-        .insert([
-            { PersonID: personId, Name: name, Address: address, DOB: dob, LicenseNumber: license, ExpiryDate: expire }
-        ]);
-
-    if (error) {
-        messageDiv.textContent = 'Error adding owner: ' + error.message;
+    // Simulating adding an owner to the database
+    const success = await simulateAddOwner({ personId, name, address, dob, license, expire });
+    if (!success) {
+        messageDiv.textContent = 'Error adding owner.';
         return;
     }
 
     messageDiv.textContent = 'Owner added successfully!';
     document.getElementById('newOwnerForm').style.display = 'none';
-
-    // Optionally, proceed to add the vehicle after adding the owner
-    await addVehicle();
+    await addVehicle(); // Optionally proceed to add the vehicle after adding the owner
 }
