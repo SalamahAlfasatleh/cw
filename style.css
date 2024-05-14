@@ -1,77 +1,49 @@
+/* Apply universal styles */
 
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
+/* Styling for header, main (inside container), aside, and footer */
+header, #container > main, aside, footer {
+  border: 1px solid black;
+  margin: 10px;
+  padding: 10px;
+}
+
+/* CSS Grid setup for the container */
+#container {
+  display: grid;
+  grid-template-columns: 1fr 3fr;  /* Adjust the grid template as needed */
+}
+
+/* Additional styles as needed */
 body {
-  position: relative;
   font-family: Arial, sans-serif;
 }
 
-.header, footer, main, aside {
-  padding: 10px;
-  margin: 10px;
-  border: 1px solid black;
-}
-
-.navigation {
+nav ul {
   list-style-type: none;
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
+  padding: 0;
 }
 
-.navigation li {
-  flex: 1;
+nav li {
+  display: inline;
+  margin-right: 10px;
 }
 
-.navigation a {
+nav a {
   text-decoration: none;
   color: black;
-  display: block;
-  text-align: center;
 }
 
-#container {
-  display: grid;
-  grid-template-columns: 1fr 4fr;
-  gap: 10px;
-}
-
-aside {
-  grid-column: 1;
-}
-
-main {
-  grid-column: 2;
-}
-
-footer {
-  text-align: center;
-  background-color: #f3f3f3;
-}
-
-h1 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#searchForm {
+/* Ensure full width and centering of content */
+body, html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-}
-
-.form-group {
-  margin-bottom: 10px; 
-}
-
-#searchForm button {
-  align-self: center; 
-  padding: 8px 16px; 
-  margin-top: 10px; 
-  cursor: pointer; 
+  align-items: center;
 }

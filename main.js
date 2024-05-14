@@ -9,88 +9,79 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 document.addEventListener('DOMContentLoaded', function() {
     const peopleForm = document.getElementById('searchForm');
-    const vehicleForm = document.getElementById('vehicleSearchForm'); // New ID for vehicle search form
+    const vehicleForm = document.getElementById('vehicleSearchForm');
+    const messageDiv = document.getElementById('message');
+    const resultsDiv = document.getElementById('results');
 
-    // Event listener for people search
-    if (peopleForm) {
-        peopleForm.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const query = document.getElementById('name').value;
-            await searchPeople(query);
-        });
-    }
-    
-    // Event listener for vehicle search
-    if (vehicleForm) {
-        vehicleForm.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const rego = document.getElementById('rego').value;
-            await searchVehicle(rego);
-        });
-    }
+    peopleForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        const name = document.getElementById('name').value.trim();
+        const license = document.getElementById('license').value.trim();
+
+        // Validation for people search
+        if (!name && !license) {
+            messageDiv.textContent = 'Error: Both fields are empty';
+            resultsDiv.innerHTML = '';
+            return;
+        }
+        if (name && license) {
+            messageDiv.textContent = 'Error: Please fill only one field';
+            resultsDiv.innerHTML = '';
+            return;
+        }
+
+        const query = name || license;
+        await searchPeople(query);
+    });
+
+    vehicleForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        const rego = document.getElementById('rego').value.trim();
+
+        // Validation for vehicle search
+        if (!rego) {
+            messageDiv.textContent = 'Error: Registration number field is empty';
+            resultsDiv.innerHTML = '';
+            return;
+        }
+
+        await searchVehicle(rego);
+    });
 });
 
 async function searchPeople(query) {
     const { data, error } = await supabase
         .from('people')
-        .select('PersonID, "Name", "Address", "DOB", "LicenseNumber", "ExpiryDate"')
-        .or(`"Name".ilike.%${query}%, "LicenseNumber".ilike.%${query}%`);
+        .select('PersonID, Name, Address, DOB, LicenseNumber, ExpiryDate')
+        .or(`Name.ilike.%${query}%, LicenseNumber.ilike.%${query}%`);
 
-    const resultsContainer = document.getElementById('results');
-    resultsContainer.innerHTML = '';
-
-    if (error) {
-        console.error('Error searching for people:', error);
-        resultsContainer.innerHTML = `<p>Error: ${error.message}</p>`;
-        return;
-    }
-
-    if (data.length === 0) {
-        resultsContainer.innerHTML = '<p>No matching records found.</p>';
-    } else {
-        const resultList = data.map(person => 
-            `<div>${person["Name"]} - License: ${person["LicenseNumber"]}, Address: ${person["Address"]}, DOB: ${person["DOB"]}, Expiry: ${person["ExpiryDate"]}</div>`
-        ).join('');
-        resultsContainer.innerHTML = resultList;
-        document.getElementById('message').textContent = 'Search successful';
-    }
+    handleResponse(data, error);
 }
 
 async function searchVehicle(rego) {
     const { data, error } = await supabase
         .from('vehicles')
-        .select(`
-            VehicleID,
-            Make,
-            Model,
-            Colour,
-            people (Name, LicenseNumber)
-        `) // Adjusted from 'owners' to 'people'
+        .select('VehicleID, Make, Model, Colour, people (Name, LicenseNumber)')
         .eq('VehicleID', rego)
         .single();
 
-    const resultsContainer = document.getElementById('results');
-    resultsContainer.innerHTML = '';
+    handleResponse([data], error); // Wrap data in array for consistency
+}
 
+function handleResponse(data, error) {
     if (error) {
-        console.error('Error searching for vehicles:', error);
-        resultsContainer.innerHTML = `<p>Error: ${error.message}</p>`;
+        console.error('Error:', error);
+        messageDiv.textContent = `Error: ${error.message}`;
+        resultsDiv.innerHTML = '';
         return;
     }
 
-    if (!data) {
-        resultsContainer.innerHTML = '<p>No matching vehicle found.</p>';
+    if (!data || data.length === 0) {
+        messageDiv.textContent = 'No result found';
+        resultsDiv.innerHTML = '';
     } else {
-        const vehicleDetails = `
-            <div>
-                <p>Make: ${data.Make}</p>
-                <p>Model: ${data.Model}</p>
-                <p>Colour: ${data.Colour}</p>
-                <p>Owner: ${data.people ? data.people.Name : 'Unknown'}</p>
-                <p>License Number: ${data.people ? data.people.LicenseNumber : 'Unknown'}</p>
-            </div>
-        `;
-        resultsContainer.innerHTML = vehicleDetails;
-        document.getElementById('message').textContent = 'Search successful';
+        const resultsHTML = data.map(person => `<div>${person.Name} - License: ${person.LicenseNumber}, Address: ${person.Address}, DOB: ${person.DOB}, Expiry: ${person.ExpiryDate}</div>`).join('');
+        resultsDiv.innerHTML = resultsHTML;
+        messageDiv.textContent = 'Search successful';
     }
 }
