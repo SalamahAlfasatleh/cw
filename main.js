@@ -13,12 +13,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultsDiv = document.getElementById('results');
     const messageDiv = document.getElementById('message');
 
-    peopleForm.addEventListener('submit', function(event) {
+    peopleForm.addEventListener('submit', async function(event) {
         event.preventDefault();
         const name = document.getElementById('name').value.trim();
         const license = document.getElementById('license').value.trim();
 
-        // Validate input
         if (!name && !license) {
             messageDiv.textContent = 'Error: Both fields are empty';
             resultsDiv.innerHTML = '';
@@ -30,11 +29,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Perform search (assuming searchPeople is an async function)
-        searchPeople(name || license);
+        const queryField = name ? 'name' : 'licenseNumber';
+        const queryValue = name || license;
+        const results = await searchPeople(queryField, queryValue);
+        displayResults(results);
     });
 
-    vehicleForm.addEventListener('submit', function(event) {
+    vehicleForm.addEventListener('submit', async function(event) {
         event.preventDefault();
         const rego = document.getElementById('rego').value.trim();
 
@@ -44,34 +45,71 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Perform search (assuming searchVehicle is an async function)
-        searchVehicle(rego);
+        const results = await searchVehicle(rego);
+        displayResults(results, 'vehicle');
     });
 });
 
-async function searchPeople(query) {
-    // Simulated API call
-    const results = await fakeApiCall(query);
-    displayResults(results);
+async function searchPeople(field, query) {
+    const { data, error } = await supabase
+        .from('people')
+        .select('*')
+        .ilike(field, `%${query}%`);
+
+    if (error) {
+        console.error('Error fetching data:', error);
+        messageDiv.textContent = 'Error fetching data';
+        resultsDiv.innerHTML = '';
+        return [];
+    }
+    return data;
 }
 
 async function searchVehicle(rego) {
-    // Simulated API call
-    const results = await fakeApiCall(rego);
-    displayResults(results);
+    const { data, error } = await supabase
+        .from('vehicles')
+        .select('*, people (*)') // Join to fetch owner details
+        .eq('vehicleID', rego);
+
+    if (error) {
+        console.error('Error fetching data:', error);
+        messageDiv.textContent = 'Error fetching data';
+        resultsDiv.innerHTML = '';
+        return [];
+    }
+    return data;
 }
 
-function displayResults(results) {
+function displayResults(results, type = 'people') {
+    resultsDiv.innerHTML = ''; // Clear previous results
     if (results.length === 0) {
         messageDiv.textContent = 'No result found';
-        resultsDiv.innerHTML = '';
     } else {
-        resultsDiv.innerHTML = results.map(result => `<div>${result}</div>`).join('');
+        results.forEach(result => {
+            if (type === 'vehicle') {
+                const vehicleDetails = `
+                    <div>
+                        <p>Make: ${result.make}</p>
+                        <p>Model: ${result.model}</p>
+                        <p>Colour: ${result.colour}</p>
+                        <p>Owner Name: ${result.people?.name || 'Unknown'}</p>
+                        <p>Owner License Number: ${result.people?.licenseNumber || 'Unknown'}</p>
+                    </div>
+                `;
+                resultsDiv.innerHTML += vehicleDetails;
+            } else {
+                const personDetails = `
+                    <div>
+                        <p>Name: ${result.name}</p>
+                        <p>Address: ${result.address}</p>
+                        <p>DOB: ${result.dob}</p>
+                        <p>License Number: ${result.licenseNumber}</p>
+                        <p>Expiry Date: ${result.expiryDate}</p>
+                    </div>
+                `;
+                resultsDiv.innerHTML += personDetails;
+            }
+        });
         messageDiv.textContent = 'Search successful';
     }
-}
-
-async function fakeApiCall(query) {
-    // Simulate fetching data
-    return new Promise(resolve => setTimeout(() => resolve([query]), 1000));
 }
