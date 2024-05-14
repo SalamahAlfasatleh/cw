@@ -133,7 +133,6 @@ async function checkAndAddVehicle() {
     const ownerName = document.getElementById('owner').value.trim();
     const messageDiv = document.getElementById('message');
 
-    // Fetch all potential matching owners
     let { data: owners, error } = await supabase
         .from('people')
         .select('PersonID')
@@ -144,15 +143,11 @@ async function checkAndAddVehicle() {
         return;
     }
 
-    // Handle the results based on the number of matches found
     if (owners.length === 1) {
-        // Exactly one owner found, proceed with adding the vehicle
         await addVehicle(rego, make, model, colour, owners[0].PersonID, messageDiv);
     } else if (owners.length > 1) {
-        // Multiple owners found, handle accordingly
         messageDiv.textContent = 'Multiple owners found. Please refine your search.';
     } else {
-        // No owners found, display the form to add a new owner
         document.getElementById('newOwnerForm').style.display = 'block';
         messageDiv.textContent = 'Owner not found. Please add new owner using the form below.';
     }
@@ -187,15 +182,14 @@ window.addOwner = async () => {
         return;
     }
 
-    // Assuming that the owner's ID is needed for the vehicle form, and that data includes the new owner's ID.
     if (data && data.length > 0) {
-        const newOwnerId = data[0].PersonID; // Example, adjust based on actual data structure
-        // Set owner ID in vehicle form if necessary
-        document.getElementById('ownerId').value = newOwnerId; // Make sure this input exists in your vehicle form
+        const newOwnerId = data[0].PersonID; // Assuming the response data structure
+        // Set owner ID in vehicle form
+        document.getElementById('ownerId').value = newOwnerId; // Ensure this ID field exists in your form
 
-        // Now submit the vehicle form
-        document.getElementById('addVehicleForm').submit();
-        messageDiv.textContent = 'Owner added successfully. Submitting vehicle information...';
+        // Now call checkAndAddVehicle to continue with adding the vehicle
+        await checkAndAddVehicle();
+        messageDiv.textContent = 'Owner added successfully. Processing vehicle information...';
     } else {
         messageDiv.textContent = 'Failed to add owner. No data returned.';
     }
