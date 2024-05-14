@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('searchForm');
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
+        console.log(document.getElementById('searchQuery'));
         const query = document.getElementById('searchQuery').value;
         await searchPeople(query);
     });
@@ -23,7 +24,7 @@ async function searchPeople(query) {
         .or(`Name.ilike.%${query}%,LicenseNumber.ilike.%${query}%`);
 
     const resultsContainer = document.getElementById('results');
-    resultsContainer.innerHTML = ''; // Clear previous results
+    resultsContainer.innerHTML = '';
 
     if (error) {
         console.error('Error searching for people:', error);
