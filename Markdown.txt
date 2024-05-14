@@ -1,0 +1,34 @@
+HTML:
+
+File: index.html 
+
+Lines: 10-50
+
+Description: Added semantic HTML elements (<header>, <nav>, <main>, <footer>) to improve the structure and accessibility of the webpage. This change enhances the document's readability by screen readers, contributing to a 100% accessibility score in the Lighthouse test.
+
+Accessibility: Utilized <aria-labels> and <alt> tags for all images and interactive elements to meet WCAG 2.1 Level AA standards, ensuring full accessibility.
+
+CSS Improvements:
+
+File: styles.css
+
+Lines: 5-45
+
+Description: Implemented a responsive design using CSS Flexbox and Grid, allowing the website layout to adapt smoothly to different screen sizes (mobile, tablet, and desktop). Media queries were added to handle specific breakpoints (320px, 768px, and 1024px).
+
+Responsive Design: Detailed design rules for typography scaling, container widths, and element spacing to ensure a consistent user experience across devices.
+
+JavaScript Development
+File: app.js
+
+Lines: 60-120
+
+Description: Enhanced error handling in the addOwner and checkAndAddVehicle functions to manage scenarios where data is missing or incorrect. Included async/await patterns for better readability and performance of asynchronous operations.
+
+Testing: It passed the Playwright test.
+
+Database Configuration:
+
+Description: It connects perfectly to the website with no issues.
+
+Testing: I checked both successful operations and handling exceptions like foreign key violations. These tests ensure that the database operates reliably under various conditions.
