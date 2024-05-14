@@ -10,34 +10,33 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('searchForm');
     form.addEventListener('submit', async function(event) {
-        event.preventDefault(); // Prevent the default form submission behavior
-        const query = document.getElementById('searchQuery').value; // Get the value from the input field
-        await searchPeople(query); // Call the searchPeople function with the query
+        event.preventDefault();
+        const query = document.getElementById('searchQuery').value;
+        await searchPeople(query);
     });
 });
 
-// Async function to search people using Supabase
 async function searchPeople(query) {
     const { data, error } = await supabase
-        .from('people') // Assuming 'people' is your table name
-        .select('PersonID, Name, Address, DOB, LicenseNumber, ExpiryDate') // Select specific fields
-        .or(`Name.ilike.%${query}%,LicenseNumber.ilike.%${query}%`); // Search condition
+        .from('people')
+        .select('PersonID, "Name", "Address", "DOB", "LicenseNumber", "ExpiryDate"')
+        .or(`"Name".ilike.%${query}%, "LicenseNumber".ilike.%${query}%`);
 
-    const resultsContainer = document.getElementById('searchResults'); // Get the results container
-    resultsContainer.innerHTML = ''; // Clear previous results
+    const resultsContainer = document.getElementById('searchResults');
+    resultsContainer.innerHTML = '';
 
     if (error) {
         console.error('Error searching for people:', error);
-        resultsContainer.innerHTML = `<p>Error: ${error.message}</p>`; // Display error message
+        resultsContainer.innerHTML = `<p>Error: ${error.message}</p>`;
         return;
     }
 
     if (data.length === 0) {
-        resultsContainer.innerHTML = '<p>No matching records found.</p>'; // Display message if no records found
+        resultsContainer.innerHTML = '<p>No matching records found.</p>';
     } else {
         const resultList = data.map(person => 
-            `<li>${person.Name} - License: ${person.LicenseNumber}, Address: ${person.Address}, DOB: ${person.DOB}, Expiry: ${person.ExpiryDate}</li>`
+            `<li>${person["Name"]} - License: ${person["LicenseNumber"]}, Address: ${person["Address"]}, DOB: ${person["DOB"]}, Expiry: ${person["ExpiryDate"]}</li>`
         ).join('');
-        resultsContainer.innerHTML = `<ul>${resultList}</ul>`; // Display the results in a list
+        resultsContainer.innerHTML = `<ul>${resultList}</ul>`;
     }
 }
