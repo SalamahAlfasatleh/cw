@@ -133,20 +133,26 @@ async function checkAndAddVehicle() {
     const ownerName = document.getElementById('owner').value.trim();
     const messageDiv = document.getElementById('message');
 
-    let { data: owner, error } = await supabase
+    // Fetch all potential matching owners
+    let { data: owners, error } = await supabase
         .from('people')
         .select('PersonID')
-        .ilike('Name', `%${ownerName}%`)
-        .single();
+        .ilike('Name', `%${ownerName}%`);
 
-    if (error && error.message !== "No rows found") {
+    if (error) {
         messageDiv.textContent = `Error: ${error.message}`;
         return;
     }
 
-    if (owner) {
-        await addVehicle(rego, make, model, colour, owner.PersonID, messageDiv);
+    // Handle the results based on the number of matches found
+    if (owners.length === 1) {
+        // Exactly one owner found, proceed with adding the vehicle
+        await addVehicle(rego, make, model, colour, owners[0].PersonID, messageDiv);
+    } else if (owners.length > 1) {
+        // Multiple owners found, handle accordingly
+        messageDiv.textContent = 'Multiple owners found. Please refine your search.';
     } else {
+        // No owners found, display the form to add a new owner
         document.getElementById('newOwnerForm').style.display = 'block';
         messageDiv.textContent = 'Owner not found. Please add new owner using the form below.';
     }
@@ -180,12 +186,9 @@ window.addOwner = async () => {
         return;
     }
 
+    // Assuming the newly added owner should automatically have the vehicle added
     const ownerID = data[0].PersonID;
-    const rego = document.getElementById('rego').value.trim();
-    const make = document.getElementById('make').value.trim();
-    const model = document.getElementById('model').value.trim();
-    const colour = document.getElementById('colour').value.trim();
-
     await addVehicle(rego, make, model, colour, ownerID, messageDiv);
     document.getElementById('newOwnerForm').style.display = 'none';
+    messageDiv.textContent = 'New owner and vehicle added successfully!';
 };
