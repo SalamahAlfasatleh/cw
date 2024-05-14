@@ -164,8 +164,6 @@ async function addVehicle(rego, make, model, colour, ownerID, messageDiv) {
         .insert([{ VehicleID: rego, Make: make, Model: model, Colour: colour, OwnerID: ownerID }]);
     if (error) {
         messageDiv.textContent = `Error adding vehicle: ${error.message}`;
-    } else {
-        messageDiv.textContent = 'Vehicle added successfully!';
     }
 }
 
@@ -178,12 +176,6 @@ window.addOwner = async () => {
     const expire = document.getElementById('expire').value;
     const messageDiv = document.getElementById('message');
 
-    // Check if PersonID is provided
-    if (!personId) {
-        messageDiv.textContent = 'Error: Person ID is required.';
-        return;
-    }
-
     const { data, error } = await supabase
         .from('people')
         .insert([{ PersonID: personId, Name: name, Address: address, DOB: dob, LicenseNumber: license, ExpiryDate: expire }]);
@@ -193,5 +185,12 @@ window.addOwner = async () => {
         return;
     }
 
-    messageDiv.textContent = 'New owner added successfully!';
+    if (response.ok) {
+        document.getElementById('addVehicleForm').submit();
+    } else {
+        console.error('Failed to add owner');
+        alert("Failed to add owner.");
+    }
+
+    messageDiv.textContent = 'Vehicle added successfully';
 };
