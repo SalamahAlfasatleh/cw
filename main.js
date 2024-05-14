@@ -182,15 +182,5 @@ window.addOwner = async () => {
         return;
     }
 
-    if (data && data.length > 0) {
-        const newOwnerId = data[0].PersonID; // Assuming the response data structure
-        // Set owner ID in vehicle form
-        document.getElementById('ownerId').value = newOwnerId; // Ensure this ID field exists in your form
-
-        // Now call checkAndAddVehicle to continue with adding the vehicle
-        await checkAndAddVehicle();
-        messageDiv.textContent = 'Owner added successfully. Processing vehicle information...';
-    } else {
-        messageDiv.textContent = 'Failed to add owner. No data returned.';
-    }
+    checkAndAddVehicle();
 };
