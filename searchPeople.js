@@ -35,8 +35,9 @@ async function searchPeople(query) {
         resultsContainer.innerHTML = '<p>No matching records found.</p>';
     } else {
         const resultList = data.map(person => 
-            `<li>${person["Name"]} - License: ${person["LicenseNumber"]}, Address: ${person["Address"]}, DOB: ${person["DOB"]}, Expiry: ${person["ExpiryDate"]}</li>`
+            `<div>${person["Name"]} - License: ${person["LicenseNumber"]}, Address: ${person["Address"]}, DOB: ${person["DOB"]}, Expiry: ${person["ExpiryDate"]}</div>`
         ).join('');
-        resultsContainer.innerHTML = `<ul>${resultList}</ul>`;
+        resultsContainer.innerHTML = resultList;
+        document.getElementById('message').textContent = 'Search successful'; // Set success message
     }
 }
