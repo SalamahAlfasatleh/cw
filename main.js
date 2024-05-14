@@ -170,7 +170,7 @@ async function addVehicle(rego, make, model, colour, ownerID, messageDiv) {
 }
 
 window.addOwner = async () => {
-    const personId = document.getElementById('personid').value.trim(); // Get the PersonID from the form
+    const personId = document.getElementById('personid').value.trim();
     const name = document.getElementById('name').value.trim();
     const address = document.getElementById('address').value.trim();
     const dob = document.getElementById('dob').value;
@@ -187,7 +187,16 @@ window.addOwner = async () => {
         return;
     }
 
-    document.getElementById('addVehicle').submit();
-    messageDiv.textContent = 'Owner added successfully. Submitting vehicle information...';
+    // Assuming that the owner's ID is needed for the vehicle form, and that data includes the new owner's ID.
+    if (data && data.length > 0) {
+        const newOwnerId = data[0].PersonID; // Example, adjust based on actual data structure
+        // Set owner ID in vehicle form if necessary
+        document.getElementById('ownerId').value = newOwnerId; // Make sure this input exists in your vehicle form
 
+        // Now submit the vehicle form
+        document.getElementById('addVehicleForm').submit();
+        messageDiv.textContent = 'Owner added successfully. Submitting vehicle information...';
+    } else {
+        messageDiv.textContent = 'Failed to add owner. No data returned.';
+    }
 };
