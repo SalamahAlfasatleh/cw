@@ -11,15 +11,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const peopleForm = document.getElementById('peopleSearchForm');
     const vehicleForm = document.getElementById('vehicleSearchForm');
 
-    peopleForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        await searchPeople();
-    });
+    if (peopleForm){
+        peopleForm.addEventListener('submit', async (event) => {
+             event.preventDefault();
+             await searchPeople();
+        });
+    }
 
-    vehicleForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        await searchVehicle();
-    });
+    if(vehicleForm){
+        vehicleForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            await searchVehicle();
+         });
+    }
+
 });
 
 async function searchPeople() {
