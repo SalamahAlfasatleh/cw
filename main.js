@@ -7,109 +7,101 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     const peopleForm = document.getElementById('peopleSearchForm');
     const vehicleForm = document.getElementById('vehicleSearchForm');
-    const resultsDiv = document.getElementById('results');
-    const messageDiv = document.getElementById('message');
 
-    peopleForm.addEventListener('submit', async function(event) {
+    peopleForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-        const name = document.getElementById('name').value.trim();
-        const license = document.getElementById('license').value.trim();
-
-        if (!name && !license) {
-            messageDiv.textContent = 'Error: Both fields are empty';
-            resultsDiv.innerHTML = '';
-            return;
-        }
-        if (name && license) {
-            messageDiv.textContent = 'Error: Please fill only one field';
-            resultsDiv.innerHTML = '';
-            return;
-        }
-
-        const queryField = name ? 'name' : 'licenseNumber';
-        const queryValue = name || license;
-        const results = await searchPeople(queryField, queryValue);
-        displayResults(results);
+        await searchPeople();
     });
 
-    vehicleForm.addEventListener('submit', async function(event) {
+    vehicleForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-        const rego = document.getElementById('rego').value.trim();
-
-        if (!rego) {
-            messageDiv.textContent = 'Error: Registration number field is empty';
-            resultsDiv.innerHTML = '';
-            return;
-        }
-
-        const results = await searchVehicle(rego);
-        displayResults(results, 'vehicle');
+        await searchVehicle();
     });
 });
 
-async function searchPeople(field, query) {
+async function searchPeople() {
+    const name = document.getElementById('name').value.trim();
+    const license = document.getElementById('license').value.trim();
+    const resultsContainer = document.getElementById('results');
+    const messageDiv = document.getElementById('message');
+
+    // Validate input
+    if ((!name && !license) || (name && license)) {
+        messageDiv.textContent = 'Error: Please fill exactly one field.';
+        resultsContainer.innerHTML = '';
+        return;
+    }
+
+    const queryField = name ? 'Name' : 'LicenseNumber';
+    const queryValue = name || license;
+
     const { data, error } = await supabase
         .from('people')
         .select('*')
-        .ilike(field, `%${query}%`);
+        .ilike(queryField, `%${queryValue}%`);
 
     if (error) {
-        console.error('Error fetching data:', error);
-        messageDiv.textContent = 'Error fetching data';
-        resultsDiv.innerHTML = '';
-        return [];
+        messageDiv.textContent = 'Error: ' + error.message;
+        resultsContainer.innerHTML = '';
+        return;
     }
-    return data;
+
+    if (data.length === 0) {
+        messageDiv.textContent = 'No result found';
+        resultsContainer.innerHTML = '';
+    } else {
+        messageDiv.textContent = 'Search successful';
+        resultsContainer.innerHTML = data.map(person =>
+            `<div>${person.Name} - ${person.Address}, DOB: ${person.DOB}, License: ${person.LicenseNumber}, Expiry: ${person.ExpiryDate}</div>`
+        ).join('');
+    }
 }
 
-async function searchVehicle(rego) {
+async function searchVehicle() {
+    const rego = document.getElementById('rego').value.trim();
+    const resultsContainer = document.getElementById('results');
+    const messageDiv = document.getElementById('message');
+
+    if (!rego) {
+        messageDiv.textContent = 'Error: Registration number field is empty';
+        resultsContainer.innerHTML = '';
+        return;
+    }
+
     const { data, error } = await supabase
         .from('vehicles')
-        .select('*, people (*)') // Join to fetch owner details
-        .eq('vehicleID', rego);
+        .select(`
+            VehicleID,
+            Make,
+            Model,
+            Colour,
+            people:OwnerID (Name, LicenseNumber)
+        `)
+        .eq('VehicleID', rego)
+        .single();
 
     if (error) {
-        console.error('Error fetching data:', error);
-        messageDiv.textContent = 'Error fetching data';
-        resultsDiv.innerHTML = '';
-        return [];
+        messageDiv.textContent = 'Error: ' + error.message;
+        resultsContainer.innerHTML = '';
+        return;
     }
-    return data;
-}
 
-function displayResults(results, type = 'people') {
-    resultsDiv.innerHTML = ''; // Clear previous results
-    if (results.length === 0) {
+    if (!data) {
         messageDiv.textContent = 'No result found';
+        resultsContainer.innerHTML = '';
     } else {
-        results.forEach(result => {
-            if (type === 'vehicle') {
-                const vehicleDetails = `
-                    <div>
-                        <p>Make: ${result.make}</p>
-                        <p>Model: ${result.model}</p>
-                        <p>Colour: ${result.colour}</p>
-                        <p>Owner Name: ${result.people?.name || 'Unknown'}</p>
-                        <p>Owner License Number: ${result.people?.licenseNumber || 'Unknown'}</p>
-                    </div>
-                `;
-                resultsDiv.innerHTML += vehicleDetails;
-            } else {
-                const personDetails = `
-                    <div>
-                        <p>Name: ${result.name}</p>
-                        <p>Address: ${result.address}</p>
-                        <p>DOB: ${result.dob}</p>
-                        <p>License Number: ${result.licenseNumber}</p>
-                        <p>Expiry Date: ${result.expiryDate}</p>
-                    </div>
-                `;
-                resultsDiv.innerHTML += personDetails;
-            }
-        });
         messageDiv.textContent = 'Search successful';
+        resultsContainer.innerHTML = `
+            <div>
+                <p>Make: ${data.Make}</p>
+                <p>Model: ${data.Model}</p>
+                <p>Colour: ${data.Colour}</p>
+                <p>Owner: ${data.people ? data.people.Name : 'Unknown'}</p>
+                <p>License Number: ${data.people ? data.people.LicenseNumber : 'Unknown'}</p>
+            </div>
+        `;
     }
 }
