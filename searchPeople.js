@@ -22,7 +22,7 @@ async function searchPeople(query) {
         .select('PersonID, "Name", "Address", "DOB", "LicenseNumber", "ExpiryDate"')
         .or(`"Name".ilike.%${query}%, "LicenseNumber".ilike.%${query}%`);
 
-    const resultsContainer = document.getElementById('searchResults');
+    const resultsContainer = document.getElementById('results');
     resultsContainer.innerHTML = '';
 
     if (error) {
