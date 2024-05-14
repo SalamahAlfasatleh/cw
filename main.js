@@ -59,8 +59,15 @@ async function searchPeople(query) {
 async function searchVehicle(rego) {
     const { data, error } = await supabase
         .from('vehicles')
-        .select('PlateNumber, Type, Color, OwnerName, OwnerLicenseNumber')
-        .eq('PlateNumber', rego);
+        .select(`
+            VehicleID,
+            Make,
+            Model,
+            Colour,
+            owners (Name, LicenseNumber)
+        `)
+        .eq('VehicleID', rego)
+        .single();
 
     const resultsContainer = document.getElementById('results');
     resultsContainer.innerHTML = '';
@@ -71,13 +78,19 @@ async function searchVehicle(rego) {
         return;
     }
 
-    if (data.length === 0) {
+    if (!data) {
         resultsContainer.innerHTML = '<p>No matching vehicle found.</p>';
     } else {
-        const resultList = data.map(vehicle => 
-            `<div>Plate: ${vehicle.PlateNumber}, Type: ${vehicle.Type}, Color: ${vehicle.Color}, Owner: ${vehicle.OwnerName}, License: ${vehicle.OwnerLicenseNumber}</div>`
-        ).join('');
-        resultsContainer.innerHTML = resultList;
+        const vehicleDetails = `
+            <div>
+                <p>Make: ${data.Make}</p>
+                <p>Model: ${data.Model}</p>
+                <p>Colour: ${data.Colour}</p>
+                <p>Owner: ${data.owners ? data.owners.Name : 'Unknown'}</p>
+                <p>License Number: ${data.owners ? data.owners.LicenseNumber : 'Unknown'}</p>
+            </div>
+        `;
+        resultsContainer.innerHTML = vehicleDetails;
         document.getElementById('message').textContent = 'Search successful';
     }
 }
