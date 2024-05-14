@@ -170,6 +170,7 @@ async function addVehicle(rego, make, model, colour, ownerID, messageDiv) {
 }
 
 window.addOwner = async () => {
+    const personId = document.getElementById('personId').value.trim(); // Get the PersonID from the form
     const name = document.getElementById('name').value.trim();
     const address = document.getElementById('address').value.trim();
     const dob = document.getElementById('dob').value;
@@ -177,18 +178,20 @@ window.addOwner = async () => {
     const expire = document.getElementById('expire').value;
     const messageDiv = document.getElementById('message');
 
+    // Check if PersonID is provided
+    if (!personId) {
+        messageDiv.textContent = 'Error: Person ID is required.';
+        return;
+    }
+
     const { data, error } = await supabase
         .from('people')
-        .insert([{ Name: name, Address: address, DOB: dob, LicenseNumber: license, ExpiryDate: expire }]);
+        .insert([{ PersonID: personId, Name: name, Address: address, DOB: dob, LicenseNumber: license, ExpiryDate: expire }]);
 
     if (error) {
         messageDiv.textContent = `Error adding owner: ${error.message}`;
         return;
     }
 
-    // Assuming the newly added owner should automatically have the vehicle added
-    const ownerID = data[0].PersonID;
-    await addVehicle(rego, make, model, colour, ownerID, messageDiv);
-    document.getElementById('newOwnerForm').style.display = 'none';
-    messageDiv.textContent = 'New owner and vehicle added successfully!';
+    messageDiv.textContent = 'New owner added successfully!';
 };
