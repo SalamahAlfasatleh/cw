@@ -129,15 +129,15 @@ async function addVehicle() {
     const make = document.getElementById('make').value.trim();
     const model = document.getElementById('model').value.trim();
     const colour = document.getElementById('colour').value.trim();
-    const ownerName = document.getElementById('owner').value.trim();
+    const owner = document.getElementById('owner').value.trim();  // Changed from ownerName to owner
 
     messageDiv.textContent = '';
     resultsContainer.innerHTML = '';
 
     // Simulating a database call for owner ID using the owner's name
-    const ownerData = await simulateOwnerLookup(ownerName);
+    const ownerData = await simulateOwnerLookup(owner);
     if (!ownerData) {
-        messageDiv.textContent = 'No existing owner found with name: ' + ownerName + '. Please add the owner.';
+        messageDiv.textContent = 'No existing owner found with name: ' + owner + '. Please add the owner.';
         document.getElementById('newOwnerForm').style.display = 'block';
         return;
     }
@@ -156,14 +156,14 @@ async function addVehicle() {
             <p>Make: ${make}</p>
             <p>Model: ${model}</p>
             <p>Colour: ${colour}</p>
-            <p>Owner: ${ownerName}</p>
+            <p>Owner: ${owner}</p>  // Changed from ownerName to owner
         </div>
     `;
 }
 
 async function addOwner() {
     const personId = document.getElementById('personid').value.trim();
-    const name = document.getElementById('name').value.trim();
+    const name = document.getElementById('name').value.trim();  // This aligns with the HTML change
     const address = document.getElementById('address').value.trim();
     const dob = document.getElementById('dob').value;
     const license = document.getElementById('license').value.trim();
