@@ -129,7 +129,7 @@ async function addVehicle() {
     const make = document.getElementById('make').value.trim();
     const model = document.getElementById('model').value.trim();
     const colour = document.getElementById('colour').value.trim();
-    const ownerName = document.getElementById('ownerName').value.trim();
+    const ownerName = document.getElementById('owner').value.trim();
 
     messageDiv.textContent = '';
     resultsContainer.innerHTML = '';
